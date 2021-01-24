@@ -93,7 +93,7 @@ class IndicatorDetailScreen extends React.Component {
                                     horizontal={true}
                                     data={data.serie}
                                     keyExtractor={(item) => item.fecha}
-                                    renderItem={({item}) => <SerieItem item={item} />}
+                                    renderItem={({item}) => <SerieItem item={item} unid={data.unidad_medida} />}
                                 />
                                 <Chart labels={this.getLabels(data.serie)} values={this.getPrice(data.serie)} />
                             </>

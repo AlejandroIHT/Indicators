@@ -4,14 +4,16 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import Colors from '../res/colors';
 
-const SerieItem = ({ item }) => {
+const SerieItem = ({ item, unid }) => {
     return (
         <View style={styles.container}>
             <View style={styles.containerValue}>
-                <View style={styles.containerIcon}>
-                    <Image style={styles.icon} source={require('Indicators/src/assets/money.png')} />
+                <View style={unid === "Porcentaje" ? styles.containerIconPercent : styles.containerIcon}>
+                    {unid === "Porcentaje" 
+                        ? <Image style={styles.iconPercent} source={require('Indicators/src/assets/percent.png')} />
+                        : <Image style={styles.icon} source={require('Indicators/src/assets/money.png')} />}
                 </View>
-                <Text style={styles.textValue}>{`${Intl.NumberFormat().format(item.valor)}`}</Text>
+                <Text style={unid === "Porcentaje" ? styles.textValuePercent : styles.textValue}>{`${Intl.NumberFormat().format(item.valor)}`}</Text>
             </View>
             <Text style={styles.text}>{`${item.fecha.substring(0, 10)}`}</Text>
         </View>
@@ -30,6 +32,7 @@ const styles = StyleSheet.create({
         marginLeft: 4,
         marginRight: 4,
         marginBottom: 8,
+        marginTop: 4,
         backgroundColor: Colors.white,
         borderRadius: 8,
         shadowColor: 'black',
@@ -53,15 +56,31 @@ const styles = StyleSheet.create({
         marginRight: 4,
         borderRadius: 20
     },
+    containerIconPercent: {
+        backgroundColor: Colors.blueOpacity,
+        padding: 4,
+        marginRight: 4,
+        borderRadius: 20
+    },
     icon: {
         width: 10,
         height: 10,
         tintColor: Colors.green
     },
+    iconPercent: {
+        width: 10,
+        height: 10,
+        tintColor: Colors.bluePrimary  
+    },
     textValue: {
         fontSize: 14,
         fontWeight: 'bold',
         color: Colors.green
+    },
+    textValuePercent: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.bluePrimary
     },
     text: {
         color: Colors.gray
