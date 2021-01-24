@@ -1,13 +1,18 @@
 import React from 'react';
 import { View, Text, SafeAreaView, SectionList, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import SerieItem from '../components/SerieItem';
+import Chart from '../components/Chart';
 import Http from '../libs/http';
 import Colors from '../res/colors';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 class IndicatorDetailScreen extends React.Component {
     state = {
         loading: false,
-        data: {},
+        data: {
+            serie: []
+        },
     };
 
     componentDidMount() {
@@ -37,45 +42,75 @@ class IndicatorDetailScreen extends React.Component {
             this.setState({ loading: true })
         }
         const res = await Http.instance.get(`https://mindicador.cl/api/${indicator[1].codigo}`);
-        console.log(res)
         this.setState({
             loading: false,
             data: res
         })
     };
 
+    getLabels = (e) => {
+        if(e.length !== 0) {
+            let labels = e.map(element => {
+                return element.fecha.substring(0, 10).substring(5, 10);
+            });
+
+            return labels.splice(0, 6).reverse();
+        }
+
+        return [""];
+    };
+
+    getPrice = (e) => {
+        if(e.length !== 0) {
+            let arrayPrice = e.map(element => {
+                return parseInt(Intl.NumberFormat().format(element.valor));
+            });
+
+            return arrayPrice.splice(0, 6).reverse();
+        }
+
+        return [0];
+    };
+
     render() {
         const { data, loading } = this.state;
         return (
             <SafeAreaView style={styles.container}>
-                {loading ? (
-                    <ActivityIndicator color={Colors.bluePrimary} size="large" />
-                ) : null}
-                <SectionList 
-                    style={styles.section}
-                    sections={this.getSections(data)}
-                    keyExtractor={(item) => item.title}
-                    renderItem={({item}) => (
-                        <View style={styles.sectionItem}>
-                          <Text style={styles.itemText}>{item}</Text>
-                        </View>
-                    )}
-                    renderSectionHeader={({section}) => (
-                        <View style={styles.sectionHeader}>
-                            <Text style={styles.sectionText}>{section.title}</Text>
-                        </View>
-                    )}
-                />
-                <View style={styles.containerTitle}>
-                    <Text style={styles.seriesTitle}>Series</Text>
+                <View style={styles.scrollView}>
+                    {loading ? (
+                        <ActivityIndicator color={Colors.bluePrimary} size="large" />
+                    ) : null}
+                    <SectionList 
+                        style={styles.section}
+                        sections={this.getSections(data)}
+                        ListHeaderComponent={
+                            <>
+                                <View style={styles.containerTitle}>
+                                    <Text style={styles.seriesTitle}>Series</Text>
+                                </View>
+                                <FlatList
+                                    style={styles.listStyle}
+                                    horizontal={true}
+                                    data={data.serie}
+                                    keyExtractor={(item) => item.fecha}
+                                    renderItem={({item}) => <SerieItem item={item} />}
+                                />
+                                <Chart labels={this.getLabels(data.serie)} values={this.getPrice(data.serie)} />
+                            </>
+                        }
+                        keyExtractor={(item) => item.title}
+                        renderItem={({item}) => (
+                            <View style={styles.sectionItem}>
+                            <Text style={styles.itemText}>{item}</Text>
+                            </View>
+                        )}
+                        renderSectionHeader={({section}) => (
+                            <View style={styles.sectionHeader}>
+                                <Text style={styles.sectionText}>{section.title}</Text>
+                            </View>
+                        )}
+                    />
                 </View>
-                <FlatList
-                    style={styles.listStyle}
-                    horizontal={true}
-                    data={data.serie}
-                    keyExtractor={(item) => item.fecha}
-                    renderItem={({item}) => <SerieItem item={item} />}
-                />
             </SafeAreaView>
         );
     };
@@ -86,10 +121,14 @@ export default IndicatorDetailScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 16,
+        paddingTop: 16,
+        backgroundColor: Colors.white,
+    },
+    scrollView: {
+        flex: 1,
     },
     section: {
-        maxHeight: 160,
+        height: 140,
     },
     sectionHeader: {
         backgroundColor: Colors.blueOpacity,

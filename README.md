@@ -1,6 +1,6 @@
 # Indicators
 
-In this app you can see chilean economic indicators, and you can see details indicator.
+In this app you can see chilean economic indicators, you can also see details indicator with a linear chart.
 
 Indicators is create with [React Native](https://reactnative.dev/), and [React Navigation](https://reactnavigation.org/).
 

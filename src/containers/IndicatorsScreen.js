@@ -13,7 +13,6 @@ class IndicatorsScreen extends React.Component {
 
     componentDidMount() {
         this.getIndicators();
-        console.log(this.state.indicators);
     };
 
     getIndicators = async () => {

@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import Colors from '../res/colors';
 
 const SerieItem = ({ item }) => {
